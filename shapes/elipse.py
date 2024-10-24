@@ -9,9 +9,9 @@ class Elipse(Shape):
 
     def draw(self):
         if self.finished:
-            self.ellipse = self.canvas.create_oval(self.x1, self.y1, self.x2, self.y2, fill="grey", outline="black", width=3)
+            self.ellipse = self.canvas.create_oval(self.x1, self.y1, self.x2, self.y2, fill="white", outline="black", width=3)
         else:
-            self.ellipse = self.canvas.create_oval(self.x1, self.y1, self.x2, self.y2, fill="grey", outline="red", width=3)
+            self.ellipse = self.canvas.create_oval(self.x1, self.y1, self.x2, self.y2, fill="white", outline="blue", width=3)
 
     def move(self, x1, y1, x2, y2):
         self.x1 = x1

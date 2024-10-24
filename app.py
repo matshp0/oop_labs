@@ -1,19 +1,69 @@
 import tkinter as tk
-from tkinter import Menu
 from editors.rectangle_editor import RectangleEditor
 from editors.elipse_editor import ElipseEditor
 from editors.line_editor import LineEditor
 from editors.dot_editor import DotEditor
+from tkinter import Menu, Button, Toplevel, PhotoImage
+
+
+class Toolbar:
+    def __init__(self, parent, app):
+        self.parent = parent
+        self.app = app
+        self.toolbar_frame = tk.Frame(parent)
+        self.toolbar_frame.pack(side=tk.TOP, fill=tk.X)
+
+        self.line_icon = PhotoImage(file="icons/line.png")
+        self.dot_icon = PhotoImage(file="icons/dot.png")
+        self.rectangle_icon = PhotoImage(file="icons/rectangle.png")
+        self.elipse_icon = PhotoImage(file="icons/elipse.png")
+
+        self.create_button(self.line_icon, self.app.set_tool_line, "Намалювати лінію")
+        self.create_button(self.dot_icon, self.app.set_tool_dot, "Намалювати точку")
+        self.create_button(self.rectangle_icon, self.app.set_tool_rectangle, "Намалювати прямокутник")
+        self.create_button(self.elipse_icon, self.app.set_tool_elipse, "Намалювати еліпс")
+
+    def create_button(self, image, command, tooltip_text):
+        button = Button(self.toolbar_frame, image=image, command=command)
+        button.image = image
+        button.pack(side=tk.LEFT, padx=2, pady=2)
+        self.create_tooltip(button, tooltip_text)
+
+    @staticmethod
+    def create_tooltip(widget, text):
+        tooltip = Tooltip(widget, text)
+
+
+class Tooltip:
+    def __init__(self, widget, text):
+        self.widget = widget
+        self.text = text
+        self.tooltip_window = None
+        self.widget.bind("<Enter>", self.show_tooltip)
+        self.widget.bind("<Leave>", self.hide_tooltip)
+
+    def show_tooltip(self, event=None):
+        x = self.widget.winfo_rootx() + 40
+        y = self.widget.winfo_rooty() + 40
+        self.tooltip_window = Toplevel(self.widget)
+        self.tooltip_window.wm_overrideredirect(True)
+        self.tooltip_window.geometry(f"+{x}+{y}")
+        label = tk.Label(self.tooltip_window, text=self.text, bg="white", relief=tk.SOLID, borderwidth=1)
+        label.pack()
+
+    def hide_tooltip(self, event=None):
+        if self.tooltip_window:
+            self.tooltip_window.destroy()
+            self.tooltip_window = None
+
 
 class App:
     def __init__(self, root):
         self.start_x = None
         self.current_shape = None
         self.root = root
-        self.root = root
         self.root.title("Lab2")
 
-        # Add "File" menu
         menu_bar = Menu(root)
         file_menu = Menu(menu_bar, tearoff=0)
         file_menu.add_command(label="Open")
@@ -22,7 +72,6 @@ class App:
         file_menu.add_command(label="Exit", command=root.quit)
         menu_bar.add_cascade(label="Файл", menu=file_menu)
 
-        # Add "Objects" menu
         objects_menu = Menu(menu_bar, tearoff=0)
         objects_menu.add_command(label="Лінія", command=self.set_tool_line)
         objects_menu.add_command(label="Точка", command=self.set_tool_dot)
@@ -30,13 +79,13 @@ class App:
         objects_menu.add_command(label="Еліпс", command=self.set_tool_elipse)
         menu_bar.add_cascade(label="Об'єкти", menu=objects_menu)
 
-        # Add "Help" menu
         help_menu = Menu(menu_bar, tearoff=0)
         help_menu.add_command(label="About")
         menu_bar.add_cascade(label="Довідка", menu=help_menu)
         root.config(menu=menu_bar)
-        # Create a canvas for drawing
-        self.canvas = tk.Canvas(root, bg="white", width=1500, height=1000)
+
+        self.toolbar = Toolbar(root, self)
+        self.canvas = tk.Canvas(root, bg="white", width=1200, height=900)
         self.canvas.pack()
 
         self.rect_editor = RectangleEditor(self.canvas)
@@ -45,24 +94,30 @@ class App:
         self.dot_editor = DotEditor(self.canvas)
 
     def set_tool_rectangle(self):
-        self.root.title("Прямокутник")
         self.current_shape = self.rect_editor
         self.current_shape.bind_events()
+        self.show_popup("Прямокутник")
 
     def set_tool_elipse(self):
-        self.root.title("Еліпс")
         self.current_shape = self.elipse_editor
         self.current_shape.bind_events()
+        self.show_popup("Еліпс")
 
     def set_tool_line(self):
-        self.root.title("Лінія")
         self.current_shape = self.line_editor
         self.current_shape.bind_events()
+        self.show_popup("Лінія")
 
     def set_tool_dot(self):
-        self.root.title("Точка")
         self.current_shape = self.dot_editor
         self.current_shape.bind_events()
+        self.show_popup("Точка")
 
+    def show_popup(self, tool_name):
+        popup = Toplevel(self.root)
+        popup.wm_overrideredirect(True)
+        popup.geometry(f"+{self.root.winfo_x() + 100}+{self.root.winfo_y() + 50}")
+        label = tk.Label(popup, text=f"Обрано: {tool_name}", bg="lightyellow", relief=tk.SOLID, borderwidth=1)
+        label.pack()
 
-
+        self.root.after(2000, popup.destroy)
