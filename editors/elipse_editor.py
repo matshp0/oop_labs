@@ -13,7 +13,6 @@ class ElipseEditor(ShapeEditor):
         self.y2 = event.y
 
         self.primitive = Elipse(self.canvas, self.x1, self.y1, self.x2, self.y2)
-        self.primitive.draw()
 
     def on_mouse_drag(self, event):
         self.x2 = event.x
@@ -23,5 +22,4 @@ class ElipseEditor(ShapeEditor):
 
     def on_button_release(self, event):
         self.primitive.finished = True
-        self.primitive.draw()
 

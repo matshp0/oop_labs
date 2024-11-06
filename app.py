@@ -1,9 +1,10 @@
 import tkinter as tk
+from shapes import Elipse, Rectangle, Line, Dot
 from editors.rectangle_editor import RectangleEditor
-from editors.elipse_editor import ElipseEditor
 from editors.line_editor import LineEditor
 from editors.dot_editor import DotEditor
 from tkinter import Menu, Button, Toplevel, PhotoImage
+from myEditor import MyEditor
 
 
 class Toolbar:
@@ -18,10 +19,10 @@ class Toolbar:
         self.rectangle_icon = PhotoImage(file="icons/rectangle.png")
         self.elipse_icon = PhotoImage(file="icons/elipse.png")
 
-        self.create_button(self.line_icon, self.app.set_tool_line, "Намалювати лінію")
-        self.create_button(self.dot_icon, self.app.set_tool_dot, "Намалювати точку")
-        self.create_button(self.rectangle_icon, self.app.set_tool_rectangle, "Намалювати прямокутник")
-        self.create_button(self.elipse_icon, self.app.set_tool_elipse, "Намалювати еліпс")
+        self.create_button(self.line_icon, lambda: self.app.editor.set_tool(Line), "Намалювати лінію")
+        self.create_button(self.dot_icon, lambda: self.app.editor.set_tool(Dot), "Намалювати точку")
+        self.create_button(self.rectangle_icon, lambda: self.app.editor.set_tool(Rectangle), "Намалювати прямокутник")
+        self.create_button(self.elipse_icon, lambda: self.app.editor.set_tool(Elipse), "Намалювати еліпс")
 
     def create_button(self, image, command, tooltip_text):
         button = Button(self.toolbar_frame, image=image, command=command)
@@ -73,10 +74,10 @@ class App:
         menu_bar.add_cascade(label="Файл", menu=file_menu)
 
         objects_menu = Menu(menu_bar, tearoff=0)
-        objects_menu.add_command(label="Лінія", command=self.set_tool_line)
-        objects_menu.add_command(label="Точка", command=self.set_tool_dot)
-        objects_menu.add_command(label="Прямокутник", command=self.set_tool_rectangle)
-        objects_menu.add_command(label="Еліпс", command=self.set_tool_elipse)
+        objects_menu.add_command(label="Лінія", command=lambda: self.editor.set_tool(Line))
+        objects_menu.add_command(label="Точка", command=lambda: self.editor.set_tool(Dot))
+        objects_menu.add_command(label="Прямокутник", command=lambda: self.editor.set_tool(Rectangle))
+        objects_menu.add_command(label="Еліпс", command=lambda: self.editor.set_tool(Elipse))
         menu_bar.add_cascade(label="Об'єкти", menu=objects_menu)
 
         help_menu = Menu(menu_bar, tearoff=0)
@@ -87,31 +88,12 @@ class App:
         self.toolbar = Toolbar(root, self)
         self.canvas = tk.Canvas(root, bg="white", width=1200, height=900)
         self.canvas.pack()
+        self.editor = MyEditor(self.canvas)
+        self.editor.set_tool(Elipse)
 
         self.rect_editor = RectangleEditor(self.canvas)
-        self.elipse_editor = ElipseEditor(self.canvas)
         self.line_editor = LineEditor(self.canvas)
         self.dot_editor = DotEditor(self.canvas)
-
-    def set_tool_rectangle(self):
-        self.current_shape = self.rect_editor
-        self.current_shape.bind_events()
-        self.show_popup("Прямокутник")
-
-    def set_tool_elipse(self):
-        self.current_shape = self.elipse_editor
-        self.current_shape.bind_events()
-        self.show_popup("Еліпс")
-
-    def set_tool_line(self):
-        self.current_shape = self.line_editor
-        self.current_shape.bind_events()
-        self.show_popup("Лінія")
-
-    def set_tool_dot(self):
-        self.current_shape = self.dot_editor
-        self.current_shape.bind_events()
-        self.show_popup("Точка")
 
     def show_popup(self, tool_name):
         popup = Toplevel(self.root)
@@ -120,4 +102,4 @@ class App:
         label = tk.Label(popup, text=f"Обрано: {tool_name}", bg="lightyellow", relief=tk.SOLID, borderwidth=1)
         label.pack()
 
-        self.root.after(2000, popup.destroy)
+        self.root.after(1000, popup.destroy)

@@ -1,27 +1,21 @@
 from shape import Shape
 
-
 class Dot(Shape):
-    def __init__(self, canvas, x, y):
-        self.radius = 5  # Radius of the dot
-        super().__init__(canvas, x - self.radius, y - self.radius, x + self.radius, y + self.radius)
-        self.dot = None
+    def __init__(self, canvas, x1, y1):
+        super().__init__(canvas, x1, y1)
+        self.drawing_conf["fill"] = "black"  # Color of the dot
+        self.drawing_conf["outline"] = "black"
+
+        self.initiate()
         self.finished = False
-        self.x = x
-        self.y = y
 
-    def draw(self):
-        if self.dot is None:
-            self.dot = self.canvas.create_oval(self.x - self.radius, self.y - self.radius,
-                                                 self.x + self.radius, self.y + self.radius,
-                                                 fill="black")
-        else:
-            # If the dot is already drawn, update its position
-            self.canvas.coords(self.dot, self.x - self.radius, self.y - self.radius,
-                               self.x + self.radius, self.y + self.radius)
+    def initiate(self):
+        radius = 2
+        self.shape = self.canvas.create_oval(
+            self.x1 - radius, self.y1 - radius,
+            self.x1 + radius, self.y1 + radius,
+            **self.drawing_conf
+        )
 
-    def move(self, x, y):
-        self.x = x
-        self.y = y
-        self.x1, self.y1, self.x2, self.y2 = x - self.radius, y - self.radius, x + self.radius, y + self.radius
-        self.draw()
+    def draw(self, x, y):
+        pass
