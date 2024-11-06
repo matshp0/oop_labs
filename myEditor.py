@@ -8,20 +8,17 @@ class MyEditor:
         self.bind_events(canvas)
 
     def set_tool(self, tool):
-        print(tool)
         self.current_tool = tool
 
     def on_button_press(self, event):
         self.current_shape = self.current_tool(self.canvas, event.x, event.y)
-        print(self.current_shape, self.current_tool)
 
     def on_mouse_drag(self, event):
-        print(self.current_shape)
         self.current_shape.draw(event.x, event.y)
 
     def on_button_release(self, event):
         self.current_shape.settle()
-        self.current_shape.draw(event.x, event.y)
+        self.current_shape.update_config()
         self.current_shape = None
 
     def bind_events(self, canvas):

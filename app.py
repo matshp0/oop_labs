@@ -1,8 +1,5 @@
 import tkinter as tk
-from shapes import Elipse, Rectangle, Line, Dot
-from editors.rectangle_editor import RectangleEditor
-from editors.line_editor import LineEditor
-from editors.dot_editor import DotEditor
+from shapes import Elipse, Rectangle, Line, Dot, LineWithCircles, Cube
 from tkinter import Menu, Button, Toplevel, PhotoImage
 from myEditor import MyEditor
 
@@ -23,6 +20,8 @@ class Toolbar:
         self.create_button(self.dot_icon, lambda: self.app.editor.set_tool(Dot), "Намалювати точку")
         self.create_button(self.rectangle_icon, lambda: self.app.editor.set_tool(Rectangle), "Намалювати прямокутник")
         self.create_button(self.elipse_icon, lambda: self.app.editor.set_tool(Elipse), "Намалювати еліпс")
+        self.create_button(self.elipse_icon, lambda: self.app.editor.set_tool(LineWithCircles), "Намалювати еліпс")
+        self.create_button(self.elipse_icon, lambda: self.app.editor.set_tool(Cube), "Намалювати еліпс")
 
     def create_button(self, image, command, tooltip_text):
         button = Button(self.toolbar_frame, image=image, command=command)
@@ -90,10 +89,6 @@ class App:
         self.canvas.pack()
         self.editor = MyEditor(self.canvas)
         self.editor.set_tool(Elipse)
-
-        self.rect_editor = RectangleEditor(self.canvas)
-        self.line_editor = LineEditor(self.canvas)
-        self.dot_editor = DotEditor(self.canvas)
 
     def show_popup(self, tool_name):
         popup = Toplevel(self.root)
