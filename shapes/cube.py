@@ -7,21 +7,25 @@ class Cube(Line, Rectangle):
     def __init__(self, canvas, x1, y1):
         super().__init__(canvas, x1, y1)
         self.offset = 45
-        self.drawing_conf["fill"] = ""
+        self.drawing_conf = {}
+
         self.front_face = self.canvas.create_rectangle(x1, y1, x1, y1, **self.drawing_conf)
         self.back_face = self.canvas.create_rectangle(x1 + self.offset, y1 + self.offset, x1 + self.offset,
                                                       y1 + self.offset, **self.drawing_conf)
-        self.drawing_conf["fill"] = "black"
         self.lines = [
             self.canvas.create_line(x1, y1, x1 + self.offset, y1 + self.offset, **self.drawing_conf),
             self.canvas.create_line(x1, y1, x1 + self.offset, y1 + self.offset, **self.drawing_conf),
             self.canvas.create_line(x1, y1, x1 + self.offset, y1 + self.offset, **self.drawing_conf),
             self.canvas.create_line(x1, y1, x1 + self.offset, y1 + self.offset, **self.drawing_conf),
         ]
-        self.drawing_conf["fill"] = None
         self.components.extend(self.lines)
         self.components.append(self.front_face)
         self.components.append(self.back_face)
+        self.drawing_conf["fill"] = ""
+        self.drawing_conf["outline"] = "black"
+        self.drawing_conf["dash"] = (1, 5)
+        self.drawing_conf["width"] = 4
+        self.update_config()
 
     def draw(self, x, y):
         self.canvas.coords(self.front_face, self.x1, self.y1, x, y)

@@ -15,13 +15,15 @@ class Toolbar:
         self.dot_icon = PhotoImage(file="icons/dot.png")
         self.rectangle_icon = PhotoImage(file="icons/rectangle.png")
         self.elipse_icon = PhotoImage(file="icons/elipse.png")
+        self.cube_icon = PhotoImage(file="icons/cube.png")
+        self.lineWithCircles_icon = PhotoImage(file="icons/lineWithCircles.png")
 
         self.create_button(self.line_icon, lambda: self.app.editor.set_tool(Line), "Намалювати лінію")
         self.create_button(self.dot_icon, lambda: self.app.editor.set_tool(Dot), "Намалювати точку")
         self.create_button(self.rectangle_icon, lambda: self.app.editor.set_tool(Rectangle), "Намалювати прямокутник")
         self.create_button(self.elipse_icon, lambda: self.app.editor.set_tool(Elipse), "Намалювати еліпс")
-        self.create_button(self.elipse_icon, lambda: self.app.editor.set_tool(LineWithCircles), "Намалювати еліпс")
-        self.create_button(self.elipse_icon, lambda: self.app.editor.set_tool(Cube), "Намалювати еліпс")
+        self.create_button(self.lineWithCircles_icon, lambda: self.app.editor.set_tool(LineWithCircles), "Намалювати відрізок з колами")
+        self.create_button(self.cube_icon, lambda: self.app.editor.set_tool(Cube), "Намалювати куб")
 
     def create_button(self, image, command, tooltip_text):
         button = Button(self.toolbar_frame, image=image, command=command)
@@ -62,7 +64,7 @@ class App:
         self.start_x = None
         self.current_shape = None
         self.root = root
-        self.root.title("Lab2")
+        self.root.title("Lab4")
 
         menu_bar = Menu(root)
         file_menu = Menu(menu_bar, tearoff=0)
@@ -77,6 +79,8 @@ class App:
         objects_menu.add_command(label="Точка", command=lambda: self.editor.set_tool(Dot))
         objects_menu.add_command(label="Прямокутник", command=lambda: self.editor.set_tool(Rectangle))
         objects_menu.add_command(label="Еліпс", command=lambda: self.editor.set_tool(Elipse))
+        objects_menu.add_command(label="Відрізок з колами", command=lambda: self.editor.set_tool(LineWithCircles))
+        objects_menu.add_command(label="Куб", command=lambda: self.editor.set_tool(Cube))
         menu_bar.add_cascade(label="Об'єкти", menu=objects_menu)
 
         help_menu = Menu(menu_bar, tearoff=0)

@@ -14,3 +14,5 @@ class Rectangle(Shape):
         self.y2 = y
         self.canvas.coords(self.components[0], self.x1, self.y1, self.x2, self.y2)
 
+    def cock(self):
+        print("recatangel method")

@@ -18,8 +18,14 @@ class Shape:
         pass
 
     def update_config(self):
+        line_conf = self.drawing_conf.copy()
+        line_conf["fill"] = line_conf.get("outline", line_conf["fill"])
+        line_conf["outline"] = None
         for component in self.components:
-            self.canvas.itemconfig(component, **self.drawing_conf)
+            if self.canvas.type(component) == "line":
+                self.canvas.itemconfig(component, **line_conf)
+            else:
+                self.canvas.itemconfig(component, self.drawing_conf)
 
     def settle(self):
         self.drawing_conf["dash"] = ()
