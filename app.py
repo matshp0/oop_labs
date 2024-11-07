@@ -18,12 +18,20 @@ class Toolbar:
         self.cube_icon = PhotoImage(file="icons/cube.png")
         self.lineWithCircles_icon = PhotoImage(file="icons/lineWithCircles.png")
 
-        self.create_button(self.line_icon, lambda: self.app.editor.set_tool(Line), "Намалювати лінію")
-        self.create_button(self.dot_icon, lambda: self.app.editor.set_tool(Dot), "Намалювати точку")
-        self.create_button(self.rectangle_icon, lambda: self.app.editor.set_tool(Rectangle), "Намалювати прямокутник")
-        self.create_button(self.elipse_icon, lambda: self.app.editor.set_tool(Elipse), "Намалювати еліпс")
-        self.create_button(self.lineWithCircles_icon, lambda: self.app.editor.set_tool(LineWithCircles), "Намалювати відрізок з колами")
-        self.create_button(self.cube_icon, lambda: self.app.editor.set_tool(Cube), "Намалювати куб")
+        self.create_button(self.line_icon, lambda: (self.app.editor.set_tool(Line), self.app.show_popup("лінію")),
+                           "Намалювати лінію")
+        self.create_button(self.dot_icon, lambda: (self.app.editor.set_tool(Dot), self.app.show_popup("точку")),
+                           "Намалювати точку")
+        self.create_button(self.rectangle_icon,
+                           lambda: (self.app.editor.set_tool(Rectangle), self.app.show_popup("прямокутник")),
+                           "Намалювати прямокутник")
+        self.create_button(self.elipse_icon, lambda: (self.app.editor.set_tool(Elipse), self.app.show_popup("еліпс")),
+                           "Намалювати еліпс")
+        self.create_button(self.lineWithCircles_icon, lambda: (
+        self.app.editor.set_tool(LineWithCircles), self.app.show_popup("відрізок з колами")),
+                           "Намалювати відрізок з колами")
+        self.create_button(self.cube_icon, lambda: (self.app.editor.set_tool(Cube), self.app.show_popup("куб")),
+                           "Намалювати куб")
 
     def create_button(self, image, command, tooltip_text):
         button = Button(self.toolbar_frame, image=image, command=command)
@@ -91,7 +99,8 @@ class App:
         self.toolbar = Toolbar(root, self)
         self.canvas = tk.Canvas(root, bg="white", width=1200, height=900)
         self.canvas.pack()
-        self.editor = MyEditor(self.canvas)
+        MyEditor(self.canvas)
+        self.editor = MyEditor.get_instance()
         self.editor.set_tool(Elipse)
 
     def show_popup(self, tool_name):

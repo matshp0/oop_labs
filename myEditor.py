@@ -1,11 +1,22 @@
-
 class MyEditor:
+    editor_instance = None
+
     def __init__(self, canvas):
-        self.canvas = canvas
-        self.shapes = []
-        self.current_tool = None
-        self.current_shape = None
-        self.bind_events(canvas)
+        if MyEditor.editor_instance is None:
+            self.canvas = canvas
+            self.shapes = []
+            self.current_tool = None
+            self.current_shape = None
+            self.bind_events(canvas)
+            MyEditor.editor_instance = self
+        else:
+            raise Exception("MyEditor is already instantiated. Use the global instance.")
+
+    @staticmethod
+    def get_instance():
+        if MyEditor.editor_instance is None:
+            raise Exception("MyEditor has not been initialized yet.")
+        return MyEditor.editor_instance
 
     def set_tool(self, tool):
         self.current_tool = tool

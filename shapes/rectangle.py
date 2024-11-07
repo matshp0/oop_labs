@@ -4,7 +4,7 @@ from shape import Shape
 class Rectangle(Shape):
     def __init__(self, canvas, x1, y1):
         super().__init__(canvas, x1, y1)
-        self.drawing_conf["fill"] = "white"
+        self.drawing_conf["fill"] = "light blue"
         self.components.append(self.canvas.create_rectangle(
             self.x1, self.y1, self.x1, self.y1, **self.drawing_conf
         ))
