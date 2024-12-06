@@ -1,7 +1,7 @@
 import tkinter as tk
 from shapes import Elipse, Rectangle, Line, Dot, LineWithCircles, Cube
-from tkinter import Menu, Button, Toplevel, PhotoImage
-from Tooltip import Tooltip
+from tkinter import Button, PhotoImage
+from hepers.Tooltip import Tooltip
 
 
 class Toolbar:
@@ -11,12 +11,12 @@ class Toolbar:
         self.toolbar_frame = tk.Frame(parent)
         self.toolbar_frame.pack(side=tk.TOP, fill=tk.X)
 
-        self.line_icon = PhotoImage(file="icons/line.png")
-        self.dot_icon = PhotoImage(file="icons/dot.png")
-        self.rectangle_icon = PhotoImage(file="icons/rectangle.png")
-        self.elipse_icon = PhotoImage(file="icons/elipse.png")
-        self.cube_icon = PhotoImage(file="icons/cube.png")
-        self.lineWithCircles_icon = PhotoImage(file="icons/lineWithCircles.png")
+        self.line_icon = PhotoImage(file="./icons/line.png")
+        self.dot_icon = PhotoImage(file="./icons/dot.png")
+        self.rectangle_icon = PhotoImage(file="./icons/rectangle.png")
+        self.elipse_icon = PhotoImage(file="./icons/elipse.png")
+        self.cube_icon = PhotoImage(file="./icons/cube.png")
+        self.lineWithCircles_icon = PhotoImage(file="./icons/lineWithCircles.png")
 
         self.create_button(self.line_icon, lambda: (self.app.editor.set_tool(Line), self.app.show_popup("лінію")),
                            "Намалювати лінію")

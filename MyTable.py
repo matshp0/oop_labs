@@ -3,7 +3,7 @@ from tkinter import ttk
 
 
 class MyTable:
-    instance = None  # Singleton instance
+    instance = None
 
     def __new__(cls, parent, shapes):
         if cls.instance is None:
@@ -36,29 +36,25 @@ class MyTable:
 
         columns = ("Shape", "x1", "y1", "x2", "y2")
 
-        # Create a custom font with larger size
-        font = ('Arial', 12)  # Change the font size here (14 is bigger)
+        font = ('Arial', 12)
 
         self.tree = ttk.Treeview(frame, columns=columns, show="headings", style="Custom.Treeview")
 
-        # Define column headings with custom font
         for col in columns:
             self.tree.heading(col, text=col, anchor=tk.CENTER)
             self.tree.column(col, width=80, anchor=tk.CENTER)
 
         self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-        # Adding vertical scrollbar
         scrollbar = tk.Scrollbar(frame, orient=tk.VERTICAL, command=self.tree.yview)
         self.tree.configure(yscrollcommand=scrollbar.set)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        # Set the font for the entire treeview (including rows)
         style = ttk.Style()
         style.configure("Custom.Treeview", font=font)
 
-        # Draw initial data
         self.redraw_table()
+        self.tree.bind("<<TreeviewSelect>>", self.on_item_selected)
 
     def redraw_table(self):
         for item in self.tree.get_children():
@@ -70,23 +66,29 @@ class MyTable:
             self.tree.insert("", tk.END, values=(shape, x1, y1, x2, y2), iid=index)
 
     def on_add(self, index):
-        """Handler for 'add' event in shapes."""
         print("Added new shape", index, self.shapes[index].__class__.__name__)
-        self.redraw_table()  # Redraw the table instead of creating a new one
+        self.redraw_table()
 
     def on_delete(self, event):
-        """Handler for DELETE key press."""
-        selected_item = self.tree.selection()  # Get the selected item
+        selected_item = self.tree.selection()
         if not selected_item:
-            return  # No item selected
+            return
 
-        # Get the index of the selected row
         selected_item_id = selected_item[0]
-        index = self.tree.index(selected_item_id)  # Get the index of the selected item
+        index = self.tree.index(selected_item_id)
         self.shapes.remove(index)
 
-        # Redraw the table after removal
         self.redraw_table()
+
+    def on_item_selected(self, event):
+        selected_item = self.tree.selection()
+        if selected_item:
+            selected_item_id = selected_item[0]
+            index = self.tree.index(selected_item_id)
+            self.shapes.emit('select', index)
+            print(f"Selected item index: {index}")
+            print(f"Selected item values: {self.tree.item(selected_item_id)['values']}")
+
 
     def show_window(self):
         self.window.deiconify()

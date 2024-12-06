@@ -25,8 +25,8 @@ class ObservableList(EventEmitter):
     def remove(self, index):
         """Remove item by index."""
         if 0 <= index < len(self._data):
-            removed_item = self._data.pop(index)  # Remove by index
-            self.emit('remove', index)  # Emit event with the index of the removed item
+            removed_item = self._data.pop(index)
+            self.emit('remove', index)
         else:
             print("Index out of range")
 
@@ -39,3 +39,6 @@ class ObservableList(EventEmitter):
 
     def __repr__(self):
         return repr(self._data)
+
+    def __len__(self):
+        return len(self._data)  # Returns the length of the internal list
