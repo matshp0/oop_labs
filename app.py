@@ -2,69 +2,9 @@ import tkinter as tk
 from shapes import Elipse, Rectangle, Line, Dot, LineWithCircles, Cube
 from tkinter import Menu, Button, Toplevel, PhotoImage
 from myEditor import MyEditor
-
-
-class Toolbar:
-    def __init__(self, parent, app):
-        self.parent = parent
-        self.app = app
-        self.toolbar_frame = tk.Frame(parent)
-        self.toolbar_frame.pack(side=tk.TOP, fill=tk.X)
-
-        self.line_icon = PhotoImage(file="icons/line.png")
-        self.dot_icon = PhotoImage(file="icons/dot.png")
-        self.rectangle_icon = PhotoImage(file="icons/rectangle.png")
-        self.elipse_icon = PhotoImage(file="icons/elipse.png")
-        self.cube_icon = PhotoImage(file="icons/cube.png")
-        self.lineWithCircles_icon = PhotoImage(file="icons/lineWithCircles.png")
-
-        self.create_button(self.line_icon, lambda: (self.app.editor.set_tool(Line), self.app.show_popup("лінію")),
-                           "Намалювати лінію")
-        self.create_button(self.dot_icon, lambda: (self.app.editor.set_tool(Dot), self.app.show_popup("точку")),
-                           "Намалювати точку")
-        self.create_button(self.rectangle_icon,
-                           lambda: (self.app.editor.set_tool(Rectangle), self.app.show_popup("прямокутник")),
-                           "Намалювати прямокутник")
-        self.create_button(self.elipse_icon, lambda: (self.app.editor.set_tool(Elipse), self.app.show_popup("еліпс")),
-                           "Намалювати еліпс")
-        self.create_button(self.lineWithCircles_icon, lambda: (
-        self.app.editor.set_tool(LineWithCircles), self.app.show_popup("відрізок з колами")),
-                           "Намалювати відрізок з колами")
-        self.create_button(self.cube_icon, lambda: (self.app.editor.set_tool(Cube), self.app.show_popup("куб")),
-                           "Намалювати куб")
-
-    def create_button(self, image, command, tooltip_text):
-        button = Button(self.toolbar_frame, image=image, command=command)
-        button.image = image
-        button.pack(side=tk.LEFT, padx=2, pady=2)
-        self.create_tooltip(button, tooltip_text)
-
-    @staticmethod
-    def create_tooltip(widget, text):
-        tooltip = Tooltip(widget, text)
-
-
-class Tooltip:
-    def __init__(self, widget, text):
-        self.widget = widget
-        self.text = text
-        self.tooltip_window = None
-        self.widget.bind("<Enter>", self.show_tooltip)
-        self.widget.bind("<Leave>", self.hide_tooltip)
-
-    def show_tooltip(self, event=None):
-        x = self.widget.winfo_rootx() + 40
-        y = self.widget.winfo_rooty() + 40
-        self.tooltip_window = Toplevel(self.widget)
-        self.tooltip_window.wm_overrideredirect(True)
-        self.tooltip_window.geometry(f"+{x}+{y}")
-        label = tk.Label(self.tooltip_window, text=self.text, bg="white", relief=tk.SOLID, borderwidth=1)
-        label.pack()
-
-    def hide_tooltip(self, event=None):
-        if self.tooltip_window:
-            self.tooltip_window.destroy()
-            self.tooltip_window = None
+from Toolbar import Toolbar
+from MyTable import MyTable
+from ObservableList import ObservableList
 
 
 class App:
@@ -72,11 +12,13 @@ class App:
         self.start_x = None
         self.current_shape = None
         self.root = root
-        self.root.title("Lab4")
+        self.shapes = ObservableList([])
+        self.table = MyTable(root, self.shapes)
+        self.root.title("Lab5")
 
         menu_bar = Menu(root)
         file_menu = Menu(menu_bar, tearoff=0)
-        file_menu.add_command(label="Open")
+        file_menu.add_command(label="Open", command=self.open_table)  # Open table command
         file_menu.add_command(label="Save")
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=root.quit)
@@ -99,7 +41,7 @@ class App:
         self.toolbar = Toolbar(root, self)
         self.canvas = tk.Canvas(root, bg="white", width=1200, height=900)
         self.canvas.pack()
-        MyEditor(self.canvas)
+        MyEditor(self.canvas, self.shapes)
         self.editor = MyEditor.get_instance()
         self.editor.set_tool(Elipse)
 
@@ -111,3 +53,9 @@ class App:
         label.pack()
 
         self.root.after(1000, popup.destroy)
+
+    def open_table(self):
+        self.table.show_window()
+
+    def close_table(self):
+        self.table.hide_window()

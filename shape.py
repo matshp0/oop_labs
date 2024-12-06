@@ -29,3 +29,7 @@ class Shape:
 
     def settle(self):
         self.drawing_conf["dash"] = ()
+
+    def erase(self):
+        for component in self.components:
+            self.canvas.delete(component)
