@@ -115,16 +115,28 @@ class Lab6Manager:
         win32gui.EnumWindows(enum_window_callback, None)
 
     def launch_object2(self):
-        hwnd = win32gui.FindWindow("Object2Class", None)
-        if not hwnd:
-            self.object2_process = subprocess.Popen(["python", "Object2.py"])
-            time.sleep(0.2)
+        while True:
+            hwnd = win32gui.FindWindow("Object2Class", None)
+            if hwnd:
+                break
+            if self.object2_process is None or self.object2_process.poll() is not None:
+                try:
+                    self.object2_process = subprocess.Popen(["python", "Object2.py"])
+                except Exception as e:
+                    break
+            time.sleep(0.1)
 
     def launch_object3(self):
-        hwnd = win32gui.FindWindow("Object3Class", None)
-        print("trying to launch")
-        if not hwnd:
-            self.object3_process = subprocess.Popen(["python", "Object3.py"])
+        while True:
+            hwnd = win32gui.FindWindow("Object3Class", None)
+            if hwnd:
+                break
+            if self.object3_process is None or self.object3_process.poll() is not None:
+                try:
+                    self.object3_process = subprocess.Popen(["python", "Object3.py"])
+                except Exception as e:
+                    break
+            time.sleep(0.1)
 
     def on_close(self):
         if self.object2_process and self.object2_process.poll() is None:
